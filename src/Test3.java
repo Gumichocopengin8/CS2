@@ -13,13 +13,12 @@ public class Test3 {
         Scanner cin = new Scanner(System.in);   // Input func
         System.out.print("How many times do you wanna input?\n Enter a number: ");
         int count = cin.nextInt();
-        double[] num = new double[count];
         double sum = 0.0;
 
         for(int i = 0; i < count; i++){
             System.out.print("Enter an integer: "); // Output.
-            num[i] = cin.nextInt();  // Input.
-            sum += num[i];  // Adding.
+            double num = cin.nextInt();  // Input.
+            sum += num;  // Adding.
             System.out.println("So far, the subtotal is " + sum); // Output subtotal.
         }
         System.out.println("\nTotal is " + sum);   // sum

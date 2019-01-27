@@ -20,7 +20,7 @@ public class Test4 {
         while (cin.hasNext()) {  // infinite looping
             String input = cin.next();
             // get the largest word. I don't need to get all of the largest word.
-            if(input.length() > word.length()){
+            if(input.length() > word.length()) {
                 word = input;
                 max_length = word.length();
             }

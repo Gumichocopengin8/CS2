@@ -13,7 +13,7 @@ public class Test6 {
         c. input a word and find and print all lines that contain that word
            (String manipulations, searching, and loops)
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner cin = new Scanner(System.in);
         String[] text = new String[1000]; // up to 1000 strings.
         int count = 0;
@@ -21,11 +21,9 @@ public class Test6 {
         // input lines of text into the array until an empty line is entered.
         // Count the number of lines.
         System.out.println("Enter lines of text. Input empty line to terminate.\n");
-        while (true){
+        while (true) {
             String input = cin.nextLine();
-            if(input.isEmpty()){
-                break;
-            }
+            if(input.isEmpty()) break;
             text[count] = input + "\n";
             count++;
         }
@@ -35,19 +33,17 @@ public class Test6 {
         System.out.print("Enter a character, such as an 'A' or 'x'.\n Char: ");
         char ch = cin.next().charAt(0);
         System.out.println("Your input: " + ch + "\nResult:");
-        for(int i = 0; i < count; i++){
-            if(text[i].charAt(0) == ch){
+        for(int i = 0; i < count; i++) {
+            if(text[i].charAt(0) == ch)
                 System.out.print((i + 1) + ": " + text[i]);
-            }
         }
         // input a word and find and print all lines that contain that word.
         System.out.print("\nEnter a word you wanna search. \n Word: ");
         String word = cin.next();
         System.out.println("Your input: " + word + "\nResult:");
-        for(int i = 0; i < count; i++){
-            if(text[i].contains(word)){    // looking for the word
+        for(int i = 0; i < count; i++) {
+            if(text[i].contains(word))    // looking for the word
                 System.out.print((i + 1) + ": " + text[i]);
-            }
         }
     }
 }
