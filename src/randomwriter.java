@@ -1,95 +1,89 @@
+/******************************************
+ *
+ * Keita Nonaka, Koki Omori
+ * Data: 5/1/2018
+ * Program 9
+ ////////////////////////////////////////////////////////////////////////////////
+ *      This program is for input and organize all of the words
+ *      from a file of text and then generate a random passage
+ *      in the same vocabulary and style of the original text.
+ *      This file is using HashMap.
+ *******************************************/
+
 import java.io.*;
 import java.util.*;
+
 public class randomwriter {
     public static void main(String[] args) throws IOException {
         //Get file name arguments from command line or interactively as entered by user
-        String sourceFileName = "aesop.txt";//interactively get this info;
-        String resultFileName = "a.txt";//interactively get this info;
-        int N = Integer.parseInt("10000");//interactively get this info;);
+        Scanner cin =  new Scanner(System.in);
+        String sourceFileName;//Source file name
+        String resultFileName;//Output file name
+        int N;//number of output;
         int nWords = 0;
-        int nFirst = 100;
+        int index = 0;
         long startTime; //for emperical time measurement
         long stopTime;  //elapsed time is difference in millisec
 
-        //Data structure declarations go here
-        //...........
-        //this is a simple linked list of all words (strings)
-        LinkedList <String> words= new LinkedList <String>();
-
-        //this is an arraylist of linked lists of strings
-        ArrayList <LinkedList<String>> byFirstLetter = new ArrayList <LinkedList<String>>(27);
-        //initialize this array of linkedlists
-        for(int i=0; i<27; i++){
-            byFirstLetter.add(i,new LinkedList<String>());
-        }
-
+        System.out.println("This program is for input and organize all of the words from a file of text and then generate a random passage in the same vocabulary and style of the original text.");
+        System.out.println("Pick an input file: ");
+        sourceFileName = cin.next(); // get a file name
+        System.out.println("What is the output file name?: ");
+        resultFileName = cin.next(); // get a file name
+        System.out.println("How many words do you wanna output?: ");
+        N = cin.nextInt();
+        Map<String, LinkedList<String>> unique = new HashMap<>();
+        Map<Integer, String> facehash = new HashMap<>();
         //Prepare files
         Scanner dataFile = new Scanner(new FileReader(sourceFileName));
-        PrintWriter outFile  = new PrintWriter(new FileWriter(resultFileName));
+        PrintWriter outFile = new PrintWriter(new FileWriter(resultFileName));
         //Read a line from the source file until end of file
-        String firstWord = dataFile.next();
-        String secondWord;
+        String current = dataFile.next();//current word
+        String first = current;
+        String next;//next word that is following current
         startTime = System.currentTimeMillis();
         while(dataFile.hasNext()){
-            secondWord = dataFile.next();
+            next = dataFile.next();
+            //check unique for current
+            if(unique.containsKey(current) == false) {
+                unique.put(current, new LinkedList<String>());
+                unique.get(current).add(next);
+                facehash.put(index, current);
+                index++;
+            } else if(unique.containsKey(current) == true)
+                unique.get(current).add(next);
+            current = next;
             nWords++;
-            if(nWords % 1000 ==0) System.out.println(nWords+" words");
-            //only print the first N words for debugging
-            //remove or comment out when you have built in a
-            //a storage structure
-            //..............
-            if(nWords<= nFirst){
-                outFile.print(firstWord+" ");
-                outFile.flush();
-            }
-            words.add(firstWord);//adding word to lone linked list for demo only
-
-            //and put words into lists by their first letter
-            char c = Character.toLowerCase(firstWord.charAt(0));
-            int ci = (c>='a' && c<='z')? c-'a' : 26;
-            ((LinkedList)(byFirstLetter.get(ci))).add(firstWord);
-
-            //look for first word in the structure
-            // and add the second word as the follow
-            //...........
-
-            firstWord = secondWord;
+            if(nWords % 1000 == 0)
+                System.out.println(nWords+" words");//print # of words each 1000 words
         }
-        //add the final word to the structure
-        //it may be the only entry without a follow word
-        //but it needs to be in the list of unique words
-        //...........
+        if(unique.containsKey(current) == false) {//put beginning word to end of follows
+            unique.put(current, new LinkedList<String>());
+            unique.get(current).add(first);
+            facehash.put(index, current);
+            index++;
+        }else
+            unique.get(current).add(first);
+        nWords++;
+        System.out.println(nWords+" words");//print total # of word
         stopTime = System.currentTimeMillis();
         System.out.println("Elapsed input time = "+(stopTime-startTime)+" msecs.");
-
         startTime = stopTime;
-        //  Let's dump the front of the list to verify same sequence
-        outFile.println(N+"\n------------from list----------------");
-        outFile.flush();
-        System.gc();
-        for(int i=0; i<N; i++){
-            outFile.print(words.get(i)+" ");
-        }
-        //   Level 0: random selection of words from lone list
         outFile.println("\n------------random list----------------");
         outFile.flush();
+
         Random rand = new Random();
+        String firstWord = facehash.get(rand.nextInt(index)); ///adfasf
+        String nextWord;
         for (int i=0; i<N; i++){
-            outFile.print(words.get(rand.nextInt(nWords))+" ");
+            nextWord = unique.get(firstWord).get(rand.nextInt(unique.get(firstWord).size()));
+            outFile.print(firstWord + " ");
+            firstWord = nextWord;
         }
 
-        //  Random words from each letter category
-        outFile.println("\n------------random alpha list----------------");
-        outFile.flush();
-        for (int i=0; i<27; i++){
-            LinkedList ll = (LinkedList)(byFirstLetter.get(i));
-            int lllen = ll.size();
-            //     outFile.print(ll);
-            if(lllen>1)outFile.print(ll.get(rand.nextInt(lllen))+" ");
-        }
         outFile.flush();
         outFile.close();
         stopTime = System.currentTimeMillis();
-        System.out.println("Elapsed output time = "+(stopTime-startTime)+" msecs.");
+        System.out.println("Elapsed output time = "+(stopTime-startTime)+" msecs.");//print time it spent
     }
 }
